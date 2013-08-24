@@ -28,8 +28,8 @@ var CSVParser = {
   //---------------------------------------
   //var parseOutput = CSVParser.parse(this.inputText, this.headersProvided, this.delimiter, this.downcaseHeaders, this.upcaseHeaders);
 
-  parse: function (input, headersIncluded, delimiterType, downcaseHeaders, upcaseHeaders, decimalSign) {
-
+  parse: function (input, headersIncluded, delimiterType, downcaseHeaders, upcaseHeaders, decimalSign, headerConverter) {
+    
     var dataArray = [];
 
     var errors = [];
@@ -105,13 +105,15 @@ var CSVParser = {
 
 
     if (upcaseHeaders) {
-      for (var i = headerNames.length - 1; i >= 0; i--){
-        headerNames[i] = headerNames[i].toUpperCase();
-      };
+      headerConverter = function() { return this.toUpperCase(); }
     };
     if (downcaseHeaders) {
+      headerConverter = function() { return this.toLowerCase(); }
+    };
+    
+    if (headerConverter) {
       for (var i = headerNames.length - 1; i >= 0; i--){
-        headerNames[i] = headerNames[i].toLowerCase();
+        headerNames[i] = headerConverter.call(headerNames[i]);
       };
     };
 
